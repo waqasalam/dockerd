@@ -270,6 +270,7 @@ func (c *controller) sandboxCleanup(activeSandboxes map[string]interface{}) {
 				logrus.Errorf("failed to restore endpoint %s in %s for container %s due to %v", eps.Eid, eps.Nid, sb.ContainerID(), err)
 				continue
 			}
+			logrus.Errorf("Add endpoint sbox store clenaup")
 			sb.addEndpoint(ep)
 		}
 

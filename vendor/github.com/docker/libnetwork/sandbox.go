@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
-	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -309,6 +308,7 @@ func (sb *sandbox) Refresh(options ...SandboxOption) error {
 
 	// Re-connect to all endpoints
 	for _, ep := range epList {
+		logrus.Infof("reconnect  %s", ep.network.name)
 		if err := ep.Join(sb); err != nil {
 			logrus.Warnf("Failed attach sandbox %s to endpoint %s: %v\n", sb.ID(), ep.ID(), err)
 		}
@@ -361,15 +361,16 @@ func (sb *sandbox) getConnectedEndpoints() []*endpoint {
 func (sb *sandbox) addEndpoint(ep *endpoint) {
 	sb.Lock()
 	defer sb.Unlock()
-
-	l := len(sb.endpoints)
-	i := sort.Search(l, func(j int) bool {
-		return ep.Less(sb.endpoints[j])
-	})
-
-	sb.endpoints = append(sb.endpoints, nil)
-	copy(sb.endpoints[i+1:], sb.endpoints[i:])
-	sb.endpoints[i] = ep
+	/*
+		l := len(sb.endpoints)
+		i := sort.Search(l, func(j int) bool {
+			return ep.Less(sb.endpoints[j])
+		})
+	*/
+	logrus.Infof("IP To resolve %v %s", ep, ep.network.name)
+	sb.endpoints = append(sb.endpoints, ep)
+	//	copy(sb.endpoints[i+1:], sb.endpoints[i:])
+	//	sb.endpoints[i] = ep
 }
 
 func (sb *sandbox) removeEndpoint(ep *endpoint) {
@@ -477,6 +478,7 @@ func (sb *sandbox) ResolveService(name string) ([]*net.SRV, []net.IP) {
 	}
 
 	for _, ep := range sb.getConnectedEndpoints() {
+		logrus.Infof("resolve  %s", ep.network.name)
 		n := ep.getNetwork()
 
 		srv, ip = n.ResolveService(name)
@@ -683,6 +685,7 @@ func (sb *sandbox) SetKey(basePath string) error {
 	}
 
 	for _, ep := range sb.getConnectedEndpoints() {
+		logrus.Infof("populate nw  %s %s", ep.network.name, ep.iface.dstPrefix)
 		if err = sb.populateNetworkResources(ep); err != nil {
 			return err
 		}

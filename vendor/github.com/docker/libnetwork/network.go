@@ -1169,7 +1169,7 @@ func (n *network) createEndpoint(name string, options ...EndpointOption) (Endpoi
 		return nil, fmt.Errorf("failed to get network during CreateEndpoint: %v", err)
 	}
 	n = ep.network
-
+	logrus.Errorf("Create endpoint %v", ep)
 	ep.processOptions(options...)
 
 	for _, llIPNet := range ep.Iface().LinkLocalAddresses() {
@@ -2124,6 +2124,7 @@ func (n *network) lbEndpointName() string {
 }
 
 func (n *network) createLoadBalancerSandbox() (retErr error) {
+	logrus.Errorf("Create loadbalancer")
 	sandboxName := n.lbSandboxName()
 	// Mark the sandbox to be a load balancer
 	sbOptions := []SandboxOption{OptionLoadBalancer(n.id)}

@@ -738,10 +738,12 @@ func (daemon *Daemon) connectToNetwork(container *container.Container, idOrName 
 	}
 
 	endpointName := strings.TrimPrefix(container.Name, "/")
+	logrus.Infof("Daemon get %s", endpointName)
 	ep, err := n.CreateEndpoint(endpointName, createOptions...)
 	if err != nil {
 		return err
 	}
+	logrus.Infof("Endpoint %s %s", ep.Name(), ep.Network())
 	defer func() {
 		if err != nil {
 			if e := ep.Delete(false); e != nil {

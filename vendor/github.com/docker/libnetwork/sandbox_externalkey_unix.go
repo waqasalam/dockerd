@@ -167,7 +167,7 @@ func (c *controller) processExternalKey(conn net.Conn) error {
 	if sandbox == nil {
 		return types.BadRequestErrorf("no sandbox present for %s", s.ContainerID)
 	}
-
+	logrus.Infof("proces external key for %s %v", s.ContainerID, s.Key)
 	return sandbox.SetKey(s.Key)
 }
 

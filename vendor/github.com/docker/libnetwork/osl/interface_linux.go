@@ -286,7 +286,7 @@ func (n *networkNamespace) AddInterface(srcName, dstPrefix string, options ...If
 	if err := nlh.LinkSetDown(iface); err != nil {
 		return fmt.Errorf("failed to set link down: %v", err)
 	}
-
+	logrus.Infof("Add interface (%s->%s)", i.DstName(), i.SrcName())
 	// Configure the interface now this is moved in the proper namespace.
 	if err := configureInterface(nlh, iface, i); err != nil {
 		// If configuring the device fails move it back to the host namespace
@@ -401,6 +401,7 @@ func setInterfaceLinkLocalIPs(nlh *netlink.Handle, iface netlink.Link, i *nwIfac
 }
 
 func setInterfaceName(nlh *netlink.Handle, iface netlink.Link, i *nwIface) error {
+	logrus.Infof(" interface (%s->%s)", i.DstName(), i.SrcName())
 	return nlh.LinkSetName(iface, i.DstName())
 }
 

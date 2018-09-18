@@ -430,7 +430,7 @@ func (ep *endpoint) Join(sbox Sandbox, options ...EndpointOption) error {
 	if sbox == nil {
 		return types.BadRequestErrorf("endpoint cannot be joined by nil container")
 	}
-
+	logrus.Errorf("Call endpoint Join %s", ep.Name)
 	sb, ok := sbox.(*sandbox)
 	if !ok {
 		return types.BadRequestErrorf("not a valid Sandbox interface")
@@ -512,7 +512,7 @@ func (ep *endpoint) sbJoin(sb *sandbox, options ...EndpointOption) (err error) {
 
 	// Current endpoint providing external connectivity for the sandbox
 	extEp := sb.getGatewayEndpoint()
-
+	logrus.Errorf("sb join")
 	sb.addEndpoint(ep)
 	defer func() {
 		if err != nil {

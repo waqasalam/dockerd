@@ -961,7 +961,7 @@ func (d *driver) CreateEndpoint(nid, eid string, ifInfo driverapi.InterfaceInfo,
 			}
 		}
 	}()
-
+	logrus.Warnf("Failed to delete sandbox side interface (%s)'s link %s", containerIfName, hostIfName)
 	// Get the sandbox side pipe interface handler
 	sbox, err := d.nlh.LinkByName(containerIfName)
 	if err != nil {
